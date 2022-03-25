@@ -6,3 +6,6 @@ execute:
 parse:
   myst_enable_extensions:
     - html_image
+html:
+  comments:
+    hypothesis: true
