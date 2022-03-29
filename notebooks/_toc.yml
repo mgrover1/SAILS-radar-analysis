@@ -4,3 +4,6 @@ parts:
 - caption: March 14, 2022
   chapters:
     - glob: march-14-2022/*
+- caption: Precipitation Comparison
+  chapters:
+    - glob: precipitation-exploration/*
