@@ -2457,7 +2457,8 @@ roTBs2RqAAAAAElFTkSuQmCC'
              <span class="n">centerlat</span><span class="p">,</span>
              <span class="n">other_field</span><span class="o">=</span><span class="s1">&#39;ZDR&#39;</span><span class="p">,</span>
              <span class="n">splash_locations</span><span class="o">=</span><span class="n">splash_locations</span><span class="p">,</span>
-             <span class="n">arm_doe_locations</span><span class="o">=</span><span class="n">arm_doe_locations</span><span class="p">):</span>
+             <span class="n">arm_doe_locations</span><span class="o">=</span><span class="n">arm_doe_locations</span><span class="p">,</span>
+             <span class="n">east_river</span><span class="o">=</span><span class="n">east_river</span><span class="p">):</span>
     
     <span class="c1"># Read in the data using pyart</span>
     <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_cfradial</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -2499,6 +2500,21 @@ roTBs2RqAAAAAElFTkSuQmCC'
                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">,</span>
                            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DOE-ARM AMF Site&#39;</span><span class="p">)</span>
     
+    <span class="n">east_river</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+                    <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                    <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;East River Watershed&#39;</span><span class="p">)</span>
+    
+    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+             <span class="mi">0</span><span class="p">,</span>
+             <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+             <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+             <span class="n">label</span><span class="o">=</span><span class="s1">&#39;East River Watershed&#39;</span><span class="p">)</span>
+    
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
     
     <span class="c1"># Add our scale bar</span>
@@ -2528,6 +2544,14 @@ roTBs2RqAAAAAElFTkSuQmCC'
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">locbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">locbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">locbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">locbox</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     
+    <span class="n">east_river</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                    <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                    <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;East River Watershed&#39;</span><span class="p">)</span>
+    
     <span class="c1"># Add a point for the KAZR radar</span>
     <span class="n">splash_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
                           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
@@ -2536,6 +2560,12 @@ roTBs2RqAAAAAElFTkSuQmCC'
     <span class="n">arm_doe_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">,</span>
                            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DOE-ARM AMF Site&#39;</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+             <span class="mi">0</span><span class="p">,</span>
+             <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+             <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+             <span class="n">label</span><span class="o">=</span><span class="s1">&#39;East River Watershed&#39;</span><span class="p">)</span>
     
     <span class="c1"># Add a scale bar</span>
     <span class="n">add_scale_line</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> 
@@ -2567,6 +2597,7 @@ roTBs2RqAAAAAElFTkSuQmCC'
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">splash_locations</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;../../data/site-locations/SPLASH_Instruments.kml&#39;</span><span class="p">)</span>
 <span class="n">arm_doe_locations</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;../../data/site-locations/doe-arm-assets.kml&#39;</span><span class="p">)[:</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">east_river</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;../../data/site-locations/East_River.kml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
