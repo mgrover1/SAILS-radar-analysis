@@ -1,6 +1,9 @@
 format: jb-book
 root: project-overview
 parts:
+- caption: Looking at the Domain
+  chapters:
+    - glob: domain-exploration/*
 - caption: March 14, 2022
   chapters:
     - glob: march-14-2022/*
