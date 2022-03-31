@@ -101,6 +101,18 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  Looking at the Domain
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../domain-exploration/plot-sail-splash-sites.html">
+   Plot the SAIL and SPLASH Locations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   March 14, 2022
  </span>
 </p>
@@ -359,9 +371,12 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">atan2</span> <span class="k">as</span> <span class="n">atan2</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">xcollection</span> <span class="k">as</span> <span class="nn">xc</span>
 <span class="kn">import</span> <span class="nn">hvplot.xarray</span>
 <span class="kn">import</span> <span class="nn">holoviews</span> <span class="k">as</span> <span class="nn">hv</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="n">fiona</span><span class="o">.</span><span class="n">drvsupport</span><span class="o">.</span><span class="n">supported_drivers</span><span class="p">[</span><span class="s1">&#39;libkml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rw&#39;</span> <span class="c1"># enable KML support which is disabled by default</span>
+<span class="n">fiona</span><span class="o">.</span><span class="n">drvsupport</span><span class="o">.</span><span class="n">supported_drivers</span><span class="p">[</span><span class="s1">&#39;LIBKML&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rw&#39;</span> <span class="c1"># enable KML support which is disabled by default</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 <span class="n">hv</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;bokeh&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2437,7 +2452,12 @@ roTBs2RqAAAAAElFTkSuQmCC'
 <p>We use the <a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.graph.RadarMapDisplay.html?highlight=radarmapdisplay#pyart.graph.RadarMapDisplay"><code class="docutils literal notranslate"><span class="pre">RadarMapDisplay</span></code></a> from PyART as the main plotting utility, with a few customizations</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_ppi</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">centerlon</span><span class="p">,</span> <span class="n">centerlat</span><span class="p">,</span> <span class="n">other_field</span><span class="o">=</span><span class="s1">&#39;ZDR&#39;</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_ppi</span><span class="p">(</span><span class="n">file</span><span class="p">,</span>
+             <span class="n">centerlon</span><span class="p">,</span>
+             <span class="n">centerlat</span><span class="p">,</span>
+             <span class="n">other_field</span><span class="o">=</span><span class="s1">&#39;ZDR&#39;</span><span class="p">,</span>
+             <span class="n">splash_locations</span><span class="o">=</span><span class="n">splash_locations</span><span class="p">,</span>
+             <span class="n">arm_doe_locations</span><span class="o">=</span><span class="n">arm_doe_locations</span><span class="p">):</span>
     
     <span class="c1"># Read in the data using pyart</span>
     <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_cfradial</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -2471,9 +2491,14 @@ roTBs2RqAAAAAElFTkSuQmCC'
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">locbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">locbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">locbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">locbox</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     
-    <span class="c1"># Label where the KAZR radar is at and place the legend in the upper right</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">centerlon</span><span class="p">,</span> <span class="n">centerlat</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;KAZR Radar&#39;</span><span class="p">)</span>
+    <span class="n">splash_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SPLASH Locations&#39;</span><span class="p">)</span>
+    
+    <span class="n">arm_doe_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+                           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DOE-ARM AMF Site&#39;</span><span class="p">)</span>
+    
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
     
     <span class="c1"># Add our scale bar</span>
@@ -2504,15 +2529,21 @@ roTBs2RqAAAAAElFTkSuQmCC'
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">locbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">locbox</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     
     <span class="c1"># Add a point for the KAZR radar</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">centerlon</span><span class="p">,</span> <span class="n">centerlat</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;KAZR Radar&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+    <span class="n">splash_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SPLASH Locations&#39;</span><span class="p">)</span>
+    
+    <span class="n">arm_doe_locations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+                           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DOE-ARM AMF Site&#39;</span><span class="p">)</span>
     
     <span class="c1"># Add a scale bar</span>
     <span class="n">add_scale_line</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> 
                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                    <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
     
     <span class="c1"># Create the image path from the time</span>
     <span class="n">image_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;../images/xband_ppi/xband_ppi_</span><span class="si">{</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.png&quot;</span>
@@ -2531,25 +2562,11 @@ roTBs2RqAAAAAElFTkSuQmCC'
 <div class="section" id="test-the-plotting-on-a-single-file">
 <h3>Test the Plotting on a Single File<a class="headerlink" href="#test-the-plotting-on-a-single-file" title="Permalink to this headline">¶</a></h3>
 <p>Let’s test out this function on a single file…</p>
-<p>We also need to read in the lat/lon of the KAZR radar</p>
+<p>We also need to read in the lat/lon of the different instrumentation sites</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kazr_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s1">&#39;../../data/ka-band/guckazrcfrgeM1.a1.20220314.000003.nc&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can grab the latitude and longitude from this dataset…</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lat</span> <span class="o">=</span> <span class="n">kazr_ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">values</span>
-<span class="n">lon</span> <span class="o">=</span> <span class="n">kazr_ds</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">values</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lat</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">lon</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>38.95615768432617, -106.98785400390625
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">splash_locations</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;../../data/site-locations/SPLASH_Instruments.kml&#39;</span><span class="p">)</span>
+<span class="n">arm_doe_locations</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;../../data/site-locations/doe-arm-assets.kml&#39;</span><span class="p">)[:</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -2563,7 +2580,7 @@ roTBs2RqAAAAAElFTkSuQmCC'
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/x-band-ppi_14_0.png" src="../_images/x-band-ppi_14_0.png" />
+<img alt="../_images/x-band-ppi_12_0.png" src="../_images/x-band-ppi_12_0.png" />
 </div>
 </div>
 </div>
@@ -2579,14 +2596,14 @@ roTBs2RqAAAAAElFTkSuQmCC'
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/x-band-ppi_16_0.png" src="../_images/x-band-ppi_16_0.png" />
-<img alt="../_images/x-band-ppi_16_1.png" src="../_images/x-band-ppi_16_1.png" />
-<img alt="../_images/x-band-ppi_16_2.png" src="../_images/x-band-ppi_16_2.png" />
-<img alt="../_images/x-band-ppi_16_3.png" src="../_images/x-band-ppi_16_3.png" />
-<img alt="../_images/x-band-ppi_16_4.png" src="../_images/x-band-ppi_16_4.png" />
-<img alt="../_images/x-band-ppi_16_5.png" src="../_images/x-band-ppi_16_5.png" />
-<img alt="../_images/x-band-ppi_16_6.png" src="../_images/x-band-ppi_16_6.png" />
-<img alt="../_images/x-band-ppi_16_7.png" src="../_images/x-band-ppi_16_7.png" />
+<img alt="../_images/x-band-ppi_14_0.png" src="../_images/x-band-ppi_14_0.png" />
+<img alt="../_images/x-band-ppi_14_1.png" src="../_images/x-band-ppi_14_1.png" />
+<img alt="../_images/x-band-ppi_14_2.png" src="../_images/x-band-ppi_14_2.png" />
+<img alt="../_images/x-band-ppi_14_3.png" src="../_images/x-band-ppi_14_3.png" />
+<img alt="../_images/x-band-ppi_14_4.png" src="../_images/x-band-ppi_14_4.png" />
+<img alt="../_images/x-band-ppi_14_5.png" src="../_images/x-band-ppi_14_5.png" />
+<img alt="../_images/x-band-ppi_14_6.png" src="../_images/x-band-ppi_14_6.png" />
+<img alt="../_images/x-band-ppi_14_7.png" src="../_images/x-band-ppi_14_7.png" />
 </div>
 </div>
 </div>
